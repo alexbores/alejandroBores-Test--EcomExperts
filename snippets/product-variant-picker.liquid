@@ -43,6 +43,18 @@
       {{ block.shopify_attributes }}
     >
       {%- for option in product.options_with_values -%}
+
+        {% if option.name == 'Color' %}
+          <label class="form__label" >
+            {{ option.name }}
+          </label>
+          <div class="colorSwatches">
+             {% for value in option.values %}
+                <button class="colorSwatch" color="{{value | handleize }}" title="{{value}}"></button>
+             {% endfor %}
+          </div>
+        {% endif %}
+
         <div class="product-form__input product-form__input--dropdown">
           <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
             {{ option.name }}
@@ -120,3 +132,72 @@
     </div>
   </div>
 </noscript>
+
+
+<script type="text/javascript">
+  const colorInputSelector = '.product-form__input.product-form__input--dropdown [name="options[Color]"]';
+  const colorSwatchesSelector = '.colorSwatches .colorSwatch';
+
+  const sizeInputSelector = '.product-form__input.product-form__input--dropdown [name="options[Size]"]';
+
+  const variantSelector = 'variant-selects';
+
+
+  function setSwatches(){
+    let colorSelect = document.querySelector(colorInputSelector);
+    let swatches = document.querySelectorAll(colorSwatchesSelector);
+    let variantSelect = document.querySelector(variantSelector);
+
+    
+    if(swatches.length == 0 || !colorSelect){
+      return;
+    }
+
+    let currentColor = colorSelect.value;
+    
+    swatches.forEach(el=>{
+       el.addEventListener('click',(e)=>{
+          swatches.forEach(el=>{
+            el.classList.remove('selected');
+          })
+          e.currentTarget.classList.add('selected');
+          let colorTitle = e.currentTarget.getAttribute('title');
+          colorSelect.value = colorTitle;
+
+          variantSelect.dispatchEvent(new Event('change'));
+       });
+    });
+
+    document.querySelector(colorSwatchesSelector+`[color="${currentColor}"]`).classList.add('selected');
+  }
+
+  function setSize(){
+     let sizeSelect = document.querySelector(sizeInputSelector);
+     let variantSelect = document.querySelector(variantSelector);
+
+     if(!sizeSelect){
+       return;
+     }
+
+     let html = `<option value="Unselected" selected="selected">Unselected</option>`;
+     sizeSelect.insertAdjacentHTML('afterbegin',html);
+
+     variantSelect.dispatchEvent(new Event('change'));
+     
+
+     function correctTitle(){
+      document.querySelector(sizeInputSelector+' [value="Unselected"]').textContent = 'Unselected';
+     }
+     variantSelect.addEventListener('change',()=>{
+        correctTitle();
+     });
+     correctTitle();
+
+
+  }
+
+  window.addEventListener('load',()=>{
+      setSwatches();
+      setSize();
+  });
+</script>

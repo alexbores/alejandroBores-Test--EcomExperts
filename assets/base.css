@@ -3511,3 +3511,44 @@ details-disclosure > details {
     --border-offset: 0px; /* Prevent the border from growing on buttons when this effect is on. */
   }
 }
+
+
+/*Swatches*/
+.product-form__input.product-form__input--dropdown:has(select[name="options[Color]"]){
+  display: none;
+}
+.colorSwatches{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.colorSwatches .colorSwatch{
+  all: unset;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  transition: all 0.3s;
+  cursor:pointer;
+  border: 3px solid rgba(0,0,0,0);
+}
+.colorSwatches .colorSwatch:hover,
+.colorSwatches .colorSwatch.selected{
+  border: 3px solid gray;
+}
+.colorSwatches .colorSwatch[color="black"]{
+  background-color: #1D1D1D;
+}
+.colorSwatches .colorSwatch[color="red"]{
+  background-color: #BE3243;
+}
+.colorSwatches .colorSwatch[color="tan"]{
+  background-color: #874C20;
+}
+
+
+
+/*cart items bundles*/
+cart-items .cart-items .cart-item.isBundle .cart-item__quantity-wrapper{
+  display: none;
+}
