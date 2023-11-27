@@ -143,6 +143,12 @@
   const variantSelector = 'variant-selects';
 
 
+  const addToCartButtonSelector = '.product-form__submit.button';
+  const paymentButtonSelector = '.shopify-payment-button__button';
+
+  let observer;
+
+
   function setSwatches(){
     let colorSelect = document.querySelector(colorInputSelector);
     let swatches = document.querySelectorAll(colorSwatchesSelector);
@@ -171,33 +177,52 @@
     document.querySelector(colorSwatchesSelector+`[color="${currentColor}"]`).classList.add('selected');
   }
 
+  function setObserver(){
+     let target = document.querySelector(addToCartButtonSelector);
+
+     observer = new MutationObserver((mutations) => {
+         mutations.forEach((m)=>{
+            checkDisableButtons();
+         });
+     });
+
+     observer.observe(target,{attributes: true, childList: false, subtree: false});
+  }
+
+  function checkDisableButtons(){
+     let sizeSelect = document.querySelector(sizeInputSelector);
+
+     if(sizeSelect == null){
+       return;
+     }
+     
+     observer?.disconnect();
+
+     if(sizeSelect.value == 'Unselected'){
+        document.querySelector(addToCartButtonSelector).setAttribute('disabled','disabled');
+        document.querySelector(paymentButtonSelector).setAttribute('disabled','disabled');
+     }
+
+     setObserver();
+     
+  }
+
   function setSize(){
      let sizeSelect = document.querySelector(sizeInputSelector);
      let variantSelect = document.querySelector(variantSelector);
 
-     if(!sizeSelect){
+     if(sizeSelect == null){
        return;
      }
 
-     let html = `<option value="Unselected" selected="selected">Unselected</option>`;
-     sizeSelect.insertAdjacentHTML('afterbegin',html);
+     sizeSelect.value = 'Unselected';
 
      variantSelect.dispatchEvent(new Event('change'));
-     
-
-     function correctTitle(){
-      document.querySelector(sizeInputSelector+' [value="Unselected"]').textContent = 'Unselected';
-     }
-     variantSelect.addEventListener('change',()=>{
-        correctTitle();
-     });
-     correctTitle();
-
-
   }
 
   window.addEventListener('load',()=>{
       setSwatches();
       setSize();
+      checkDisableButtons();
   });
 </script>

@@ -3552,3 +3552,9 @@ details-disclosure > details {
 cart-items .cart-items .cart-item.isBundle .cart-item__quantity-wrapper{
   display: none;
 }
+
+
+/* products media */
+media-gallery .hideMedia{
+  display: none;
+}
